@@ -10,44 +10,43 @@ import { listOrders } from './app/useCases/orders/listOrders';
 import { createOrder } from './app/useCases/orders/createOrder';
 import { changeOrderStatus } from './app/useCases/orders/changeOrderStatus';
 import { cancelOrder } from './app/useCases/orders/cancelOrder';
+
+// Cria uma instância do router Express
 export const router = Router();
 
-//configuração do multer
+// Configura o multer para processar uploads de arquivos
 const upload = multer({
 	storage: multer.diskStorage({
-		destination(req, file, callback){
+		destination(req, file, callback) {
 			callback(null, path.resolve(__dirname, '..', 'uploads'));
 		},
-		filename(req, file, callback){
+		filename(req, file, callback) {
 			callback(null, `${Date.now()}-${file.originalname}`);
 		},
-	})
-
+	}),
 });
 
-//List categories
+// Rotas para listagem e criação de categorias
 router.get('/categories', listCategories);
-
-//Create category
 router.post('/categories', createCategory);
 
-//List products
+// Rotas para listagem de produtos
 router.get('/products', listProducts);
 
-//Create products
+// Rota para criação de produtos com upload de imagem
 router.post('/products', upload.single('image'), createProduct);
 
-//Get products by category
+// Rota para listagem de produtos por categoria
 router.get('/categories/:categoryId/products', listProductsByCategory);
 
-//List orders
+// Rotas para listagem de pedidos
 router.get('/orders', listOrders);
 
-//Create orders
+// Rota para criação de pedidos
 router.post('/orders', createOrder);
 
-//Change orders status/ patch e nao put por ser uma alteração parcial
+// Rota para atualização do status de um pedido
 router.patch('/orders/:orderId', changeOrderStatus);
 
-//Delete/cancel order
+// Rota para cancelamento de um pedido
 router.delete('/orders/:orderId', cancelOrder);
